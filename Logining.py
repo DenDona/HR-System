@@ -1,20 +1,30 @@
+import logging
 from classeslogin import b
 from validation import validation_password
 
+# Настройка логирования
+logging.basicConfig(
+    filename='HR-System/errors.log',
+    level=logging.ERROR,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
 b.import_admins()
 
-#ВХОД И РЕГИСТРАЦИЯ
+
+# ВХОД И РЕГИСТРАЦИЯ
 def Login_in_system():
     while True:
         login_in = input("""
 ──────────────────────────────────────────────────────
                  Вход в HR-Систему
 ──────────────────────────────────────────────────────
-    
+
 1. Войти
 2. Зарегестрироваться
 3. Выйти
-    
+
 Введите значение (1-3): """)
 
         if login_in == '1':
@@ -25,7 +35,10 @@ def Login_in_system():
                 Login_in_system()
             password = input("""
 Введите пароль: """)
-            b.login(login, password)
+            try:
+                b.login(login, password)
+            except Exception as e:
+                logging.error(f"Ошибка при входе: {e}")
         elif login_in == '2':
             login = input("""
 Введите "Exit" Чтобы выйти
@@ -34,15 +47,17 @@ def Login_in_system():
                 Login_in_system()
             password = input("""
 Введите пароль: """)
-            validation_password(password)
-            fullname = input("""
+            if validation_password(password):
+                fullname = input("""
 Введите ФИО: """)
-            b.add_admin(login, password, fullname)
-            print("""
+                b.add_admin(login, password, fullname)
+                print("""
 Админ скоро подтвердит вас!
 
 Отпишитесь в Telegram админимтрации:
 1. @DenDona""")
+            else:
+                print("[Ошибка] Длина пароля должна быть не менее 8 символов.")
         elif login_in == '3':
             print("Вы вышли.")
             break

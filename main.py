@@ -1,9 +1,20 @@
+import logging
 from clases import a
 from validation import validation_age, validation_mail, validation_status
 from classeslogin import b
 
+# Настройка логирования
+logging.basicConfig(
+    filename='HR-System/errors.log',
+    level=logging.ERROR,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
 a.import_json()
 print("Приветствую данные загружены!")
+
+
 def hr_menu():
     while True:
         choice_mode = input("""
@@ -12,7 +23,7 @@ def hr_menu():
 ──────────────────────────────────────────────────────
         🎯 HR-СИСТЕМА: Управление кандидатами
 ──────────────────────────────────────────────────────
-        
+
 [1] Добавить кандидата
 [2] Просмотреть всех кандидатов
 [3] Найти кандидата (по ID или ФИО)
@@ -23,12 +34,12 @@ def hr_menu():
 [8] Загрузить данные
 [9] Подтвердить пользователя
 [0] Выход
-        
+
 Выберите действие (1-9): """).strip()
         print("""
 ─────────────────────────────────""")
 
-        #ДОБАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯ
+        # ДОБАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯ
         if choice_mode == "1":
             surname = input("""
 Введите "Exit" если хотите выйти.
@@ -55,34 +66,46 @@ def hr_menu():
 Введите статус: """).strip()
             status = validation_status(status)
             print("""─────────────────────────────────""")
-            a.add_person(surname, name, patronymic, age, mail, status)
+            try:
+                a.add_person(surname, name, patronymic, age, mail, status)
+            except Exception as e:
+                logging.error(f"Ошибка при добавлении кандидата: {e}")
 
-        #ВЫВОД ВСЕХ ПОЛЬЗОВАТЕЛЕЙ
+        # ВЫВОД ВСЕХ ПОЛЬЗОВАТЕЛЕЙ
         elif choice_mode == "2":
-            print(a.all_persons())
+            try:
+                print(a.all_persons())
+            except Exception as e:
+                logging.error(f"Ошибка при выводе всех кандидатов: {e}")
 
-        #НАХОДИТЬ ПО ФИО И ID
+        # НАХОДИТЬ ПО ФИО И ID
         elif choice_mode == "3":
             search_id_fio = input("""
 Введите "Exit" если хотите выйти.
 
 [1] Поиск по ID
 [2] Поиск по ФИО
-            
+
 Выберите действие (1-2): """).strip()
             print("─────────────────────────────────")
 
             if search_id_fio == "1":
                 search_id = int(input("Введите ID: ").strip())
-                print(a.get_person_ID(search_id))
+                try:
+                    print(a.get_person_ID(search_id))
+                except Exception as e:
+                    logging.error(f"Ошибка при поиске по ID: {e}")
             elif search_id_fio == "2":
                 search_fio = input("Введите ФИО: ").strip()
-                print(a.get_person_fio(search_fio))
+                try:
+                    print(a.get_person_fio(search_fio))
+                except Exception as e:
+                    logging.error(f"Ошибка при поиске по ФИО: {e}")
             elif search_id_fio == "Exit":
                 print("Вы вышли.")
                 hr_menu()
 
-        #ФИЛЬТРАЦИЯ ПО СТАТУСУ
+        # ФИЛЬТРАЦИЯ ПО СТАТУСУ
         elif choice_mode == "4":
             search_status = input("""
 Введите "Exit" если хотите выйти.            
@@ -91,27 +114,39 @@ def hr_menu():
 [2] interviewed
 [3] rejected
 [4] hired
-            
+
 Выберите статус (1-4): """).strip()
             print("─────────────────────────────────")
             if search_status == "1":
-                print(a.filter_by_status("new"))
+                try:
+                    print(a.filter_by_status("new"))
+                except Exception as e:
+                    logging.error(f"Ошибка при фильтрации по статусу 'new': {e}")
             elif search_status == "2":
-                print(a.filter_by_status("interviewed"))
+                try:
+                    print(a.filter_by_status("interviewed"))
+                except Exception as e:
+                    logging.error(f"Ошибка при фильтрации по статусу 'interviewed': {e}")
             elif search_status == "3":
-                print(a.filter_by_status("rejected"))
+                try:
+                    print(a.filter_by_status("rejected"))
+                except Exception as e:
+                    logging.error(f"Ошибка при фильтрации по статусу 'rejected': {e}")
             elif search_status == "4":
-                print(a.filter_by_status("hired"))
+                try:
+                    print(a.filter_by_status("hired"))
+                except Exception as e:
+                    logging.error(f"Ошибка при фильтрации по статусу 'hired': {e}")
             elif search_status == "Exit":
                 print("Вы вышли.")
                 hr_menu()
 
-        #РЕДАКТИРОВАНИЕ ПОЛЬЗОВАТЕЛЯ
+        # РЕДАКТИРОВАНИЕ ПОЛЬЗОВАТЕЛЯ
         elif choice_mode == "5":
             ID = input("""
-Введите "Exit" если хотите выйти.
+Введите "0" если хотите выйти.
 Введите ID: """).strip()
-            if ID == "Exit":
+            if ID == "0":
                 print("Вы вышли.")
                 hr_menu()
             if ID.isdigit():
@@ -139,58 +174,90 @@ E-mail: {person['mail']}
 [4] Возраст
 [5] E-mail
 [6] Статус
-            
+
 Введите что хотите изменить (1-6): """).strip()
             print("""
 ─────────────────────────────────""")
 
             if key == "1":
                 value = input("Введите значение: ").strip()
-                print(a.edit_candidate(ID, "surname", value))
+                try:
+                    print(a.edit_candidate(ID, "surname", value))
+                except Exception as e:
+                    logging.error(f"Ошибка при редактировании фамилии: {e}")
             elif key == "2":
                 value = input("Введите значение: ").strip()
-                print(a.edit_candidate(ID, "name", value))
+                try:
+                    print(a.edit_candidate(ID, "name", value))
+                except Exception as e:
+                    logging.error(f"Ошибка при редактировании имени: {e}")
             elif key == "3":
                 value = input("Введите значение: ").strip()
-                print(a.edit_candidate(ID, "patronymic", value))
+                try:
+                    print(a.edit_candidate(ID, "patronymic", value))
+                except Exception as e:
+                    logging.error(f"Ошибка при редактировании отчества: {e}")
             elif key == "4":
                 value = input("Введите значение: ").strip()
                 validation_age(value)
-                print(a.edit_candidate(ID, "age", value))
+                try:
+                    print(a.edit_candidate(ID, "age", value))
+                except Exception as e:
+                    logging.error(f"Ошибка при редактировании возраста: {e}")
             elif key == "5":
                 value = input("Введите значение: ").strip()
-                print(a.edit_candidate(ID, "mail", value))
+                try:
+                    print(a.edit_candidate(ID, "mail", value))
+                except Exception as e:
+                    logging.error(f"Ошибка при редактировании почты: {e}")
             elif key == "6":
                 value = input("Введите значение: ").strip()
-                print(a.edit_candidate(ID, "status", value))
+                try:
+                    print(a.edit_candidate(ID, "status", value))
+                except Exception as e:
+                    logging.error(f"Ошибка при редактировании статуса: {e}")
 
-        #УДАЛЕНИЕ ПОЛЬЗОВТЕЛЯ
+        # УДАЛЕНИЕ ПОЛЬЗОВТЕЛЯ
         elif choice_mode == "6":
             ID = int(input("""
 Введите "0" если хотите выйти.
 Введите ID: """))
-            print(a.del_candidate(ID))
+            try:
+                print(a.del_candidate(ID))
+            except Exception as e:
+                logging.error(f"Ошибка при удалении кандидата: {e}")
 
-        #СОХРАНЕНИЕ ДАННЫХ
+        # СОХРАНЕНИЕ ДАННЫХ
         elif choice_mode == "7":
-            a.export_json()
-            print("Данные выгружены.")
-            print("─────────────────────────────────")
+            try:
+                a.export_json()
+                print("Данные выгружены.")
+                print("─────────────────────────────────")
+            except Exception as e:
+                logging.error(f"Ошибка при сохранении данных: {e}")
 
-        #РАЗГРУЗКА ДАННЫХ
+        # РАЗГРУЗКА ДАННЫХ
         elif choice_mode == "8":
-            a.import_json()
-            print("Данные загружены.")
-            print("─────────────────────────────────")
+            try:
+                a.import_json()
+                print("Данные загружены.")
+                print("─────────────────────────────────")
+            except Exception as e:
+                logging.error(f"Ошибка при загрузке данных: {e}")
 
-        #ПОДТВЕРЖДЕНИЕ АДМИНИСТРАЦИИ
+        # ПОДТВЕРЖДЕНИЕ АДМИНИСТРАЦИИ
         elif choice_mode == "9":
             login = input("Введите логин пользователя: ").strip()
-            b.approved_admin(login)
+            try:
+                b.approved_admin(login)
+            except Exception as e:
+                logging.error(f"Ошибка при подтверждении администратора: {e}")
 
-        #ВЫХОД
+        # ВЫХОД
         elif choice_mode == "0":
-            a.export_json()
-            print("До свидания!")
+            try:
+                a.export_json()
+                print("До свидания!")
+            except Exception as e:
+                logging.error(f"Ошибка при выходе: {e}")
             break
-
