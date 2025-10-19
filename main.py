@@ -54,8 +54,8 @@ def hr_menu():
             patronymic = input("""           
 Введите отчество: """).strip().capitalize()
             print("""─────────────────────────────────""")
-            age = input("""
-Введите возраст (15-60): """).strip()
+            age = int(input("""
+Введите возраст (15-60): """).strip())
             age = validation_age(age)
             print("""─────────────────────────────────""")
             mail = input("""
