@@ -131,7 +131,7 @@ class Canditants:
     #СОХРАНЕНИЕ ПОЛЬЗОВТЕЛЕЙ
     def export_json(self):
         try:
-            with open("output.json", "w", encoding="utf-8") as f:
+            with open("HR-System/output.json", "w", encoding="utf-8") as f:
                 json.dump(self.persons, f, indent=4)
         except Exception as e:
             logging.error(f"Ошибка при сохранении данных: {e}")
@@ -139,7 +139,7 @@ class Canditants:
     #РАЗГРУЗКА ПОЛЬЗОВАТЕЛЕЙ
     def import_json(self):
         try:
-            with open("output.json", "r", encoding="utf-8") as f:
+            with open("HR-System/output.json", "r", encoding="utf-8") as f:
                 pers_dict = json.load(f)
                 self.persons = {int(k): v for k, v in pers_dict.items()}
         except Exception as e:

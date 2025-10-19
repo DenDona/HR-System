@@ -61,7 +61,7 @@ class Login:
     #СОХРАНЕНИЕ АДМИНОВ
     def export_admins(self):
         try:
-            with open("admins.json", "w", encoding="utf-8") as f:
+            with open("HR-System/admins.json", "w", encoding="utf-8") as f:
                 json.dump(self.admins, f, indent=4)
         except Exception as e:
             logging.error(f"Ошибка при сохранении данных: {e}")
@@ -69,7 +69,7 @@ class Login:
     #РАЗГРУЗКА АДМИНОВ
     def import_admins(self):
         try:
-            with open("admins.json", "r", encoding="utf-8") as f:
+            with open("HR-System/admins.json", "r", encoding="utf-8") as f:
                 pers_dict = json.load(f)
                 self.admins = {k: v for k, v in pers_dict.items()}
         except Exception as e:
